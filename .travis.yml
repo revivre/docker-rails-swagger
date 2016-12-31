@@ -1,0 +1,19 @@
+language: ruby
+sudo: required
+cache: bundler
+gemfile:
+  - Gemfile
+services:
+  - docker
+  - postgres
+env:
+ DOCKER_COMPOSE_VERSION: 1.9.0
+before_install:
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+script:
+  - docker-compose build
+  - docker-compose up -d
+  - docker-compose run -e RAILS_ENV=test web rails db:create db:migrate db:seed
+  - docker-compose run -e RAILS_ENV=test web rspec spec/
