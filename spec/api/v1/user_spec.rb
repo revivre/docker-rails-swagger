@@ -17,6 +17,26 @@ describe '/v1/users' do
       expect(@json[1]['name']).to eq 'Bob'
     end
   end
+
+  context 'POST' do
+    let(:path) { '/v1/users.json' }
+    before do
+      @params = { params: FactoryGirl.attributes_for(:user,
+                    name: 'Dylan', email: 'dylan@example.com', age: 39) }
+    end
+
+    it 'creates a user' do
+      post path, @params
+      @json = JSON.parse(response.body)
+
+      expect(response).to be_success
+      expect(response).to have_http_status(:created)
+
+      expect(@json['name']).to eq 'Dylan'
+      expect(@json['email']).to eq 'dylan@example.com'
+      expect(@json['age']).to eq 39
+    end
+  end
 end
 
 describe '/v1/users/:id' do

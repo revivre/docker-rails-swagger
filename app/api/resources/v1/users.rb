@@ -17,6 +17,19 @@ module Resources
         get ':id' do
           present User.find(params[:id]), with: Entities::V1::UserEntity
         end
+        desc 'create user'
+        params do
+          requires :name, type: String, desc: 'user name'
+          requires :email, type: String, desc: 'user email'
+          requires :age, type: Integer, desc: 'user age'
+        end
+        post do
+          User.create!({
+            name: params[:name],
+            email: params[:email],
+            age: params[:age]
+          })
+        end
       end
     end
   end
