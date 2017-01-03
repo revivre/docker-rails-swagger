@@ -54,4 +54,34 @@ describe '/v1/users/:id' do
       expect(@json['name']).to eq 'Charlie'
     end
   end
+
+  context 'PUT' do
+    before do
+      @user = FactoryGirl.create(:user)
+      @path = "/v1/users/#{@user.id}.json"
+    end
+
+    it 'updates a user with all attributes' do
+      @params = { params: FactoryGirl.attributes_for(:user,
+                    name: 'Edgar', email: 'edgar@example.com', age: 45) }
+      put @path, @params
+      expect(response).to be_success
+      expect(response).to have_http_status(:success)
+
+      expect(@user.reload.name).to eq 'Edgar'
+      expect(@user.reload.email).to eq 'edgar@example.com'
+      expect(@user.reload.age).to eq 45
+    end
+
+    it 'updates a user with an attribute' do
+      @params = { params: FactoryGirl.attributes_for(:user,
+                    name: 'Fridge')}
+      put @path, @params
+      expect(response).to be_success
+      expect(response).to have_http_status(:success)
+
+      expect(@user.reload.name).to eq 'Fridge'
+      expect(@user.reload.email).not_to eq 'fridge@example.com'
+    end
+  end
 end

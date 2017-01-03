@@ -30,6 +30,22 @@ module Resources
             age: params[:age]
           })
         end
+        desc 'update user'
+        params do
+          requires :id, type: String, desc: 'user id'
+          requires :name, type: String, desc: 'user name'
+          requires :email, type: String, desc: 'user email'
+          requires :age, type: String, desc: 'user age'
+        end
+        put ':id' do
+          @user = User.find(params[:id])
+          @user.name = params[:name] if params[:name]
+          @user.email = params[:email] if params[:email]
+          @user.age = params[:age] if params[:age]
+          @user.save
+
+          present User.find(params[:id]), with: Entities::V1::UserEntity
+        end
       end
     end
   end
